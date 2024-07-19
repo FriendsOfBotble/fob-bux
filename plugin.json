@@ -1,0 +1,12 @@
+{
+    "id": "friendsofbotble/bux",
+    "name": "Bux Payment Gateway",
+    "namespace": "FriendsOfBotble\\Bux\\",
+    "provider": "FriendsOfBotble\\Bux\\Providers\\BuxServiceProvider",
+    "author": "Friends of Botble",
+    "url": "https://friendsofbotble.com",
+    "version": "1.0.0",
+    "description": "Bux payment gateway integration",
+    "minimum_core_version": "7.0.0",
+    "require": ["botble/ecommerce", "botble/payment"]
+}
