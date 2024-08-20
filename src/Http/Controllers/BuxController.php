@@ -2,6 +2,7 @@
 
 namespace FriendsOfBotble\Bux\Http\Controllers;
 
+use Botble\Hotel\Models\Booking;
 use FriendsOfBotble\Bux\Services\Bux;
 use Botble\Base\Http\Controllers\BaseController;
 use Botble\Base\Http\Responses\BaseHttpResponse;
@@ -35,6 +36,23 @@ class BuxController extends BaseController
                     'payment_type' => 'direct',
                     'order_id' => (array)$request->input('order_ids'),
                 ], $request);
+
+                if (is_plugin_active('hotel')) {
+                    $booking = Booking::query()
+                        ->select('transaction_id')
+                        ->find(Arr::first($request->input('order_ids', [])));
+
+                    if (! $booking) {
+                        return $response
+                            ->setNextUrl(PaymentHelper::getCancelURL())
+                            ->setMessage(__('Checkout failed!'));
+                    }
+
+                    return $response
+                        ->setNextUrl(PaymentHelper::getRedirectURL($booking->transaction_id))
+                        ->setMessage(__('Checkout successfully!'));
+                }
+
 
                 $nextUrl = PaymentHelper::getRedirectURL($request->input('checkout_token'));
 
