@@ -4,7 +4,10 @@ namespace FriendsOfBotble\Bux\Providers;
 
 use FriendsOfBotble\Bux\Services\Bux;
 use FriendsOfBotble\Bux\Services\Gateways\BuxPaymentService;
-use Botble\Ecommerce\Models\Currency;
+use FriendsOfBotble\Instamojo\Services\InstamojoPaymentService;
+use Botble\Ecommerce\Models\Currency as CurrencyEcommerce;
+use Botble\RealEstate\Models\Currency as CurrencyRealEstate;
+use Botble\JobBoard\Models\Currency as CurrencyJobBoard;
 use Botble\Payment\Enums\PaymentMethodEnum;
 use Html;
 use Illuminate\Http\Request;
@@ -98,7 +101,14 @@ class HookServiceProvider extends ServiceProvider
         $paymentData = apply_filters(PAYMENT_FILTER_PAYMENT_DATA, [], $request);
 
         if (strtoupper($currentCurrency->title) !== 'PHP') {
-            $supportedCurrency = Currency::query()->where('title', 'PHP')->first();
+            $currency = match (true) {
+                is_plugin_active('ecommerce') => CurrencyEcommerce::class,
+                is_plugin_active('job-board') => CurrencyJobBoard::class,
+                is_plugin_active('real-estate') => CurrencyRealEstate::class,
+                default => null,
+            };
+
+            $supportedCurrency = $currency::query()->where('title', 'PHP')->first();
 
             if ($supportedCurrency) {
                 $paymentData['currency'] = strtoupper($supportedCurrency->title);

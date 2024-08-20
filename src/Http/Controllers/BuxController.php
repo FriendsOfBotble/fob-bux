@@ -36,8 +36,14 @@ class BuxController extends BaseController
                     'order_id' => (array)$request->input('order_ids'),
                 ], $request);
 
+                $nextUrl = PaymentHelper::getRedirectURL($request->input('checkout_token'));
+
+                if (is_plugin_active('job-board') || is_plugin_active('real-estate')) {
+                    $nextUrl = $nextUrl . '?charge_id=' . $data['ref_code'];
+                }
+
                 return $response
-                    ->setNextUrl(PaymentHelper::getRedirectURL($request->input('checkout_token')))
+                    ->setNextUrl($nextUrl)
                     ->setMessage(__('Checkout successfully!'));
             }
 
