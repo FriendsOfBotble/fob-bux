@@ -1,5 +1,5 @@
 {
-    "id": "friendsofbotble/bux",
+    "id": "friendsofbotble/fob-bux",
     "name": "Bux Payment Gateway",
     "namespace": "FriendsOfBotble\\Bux\\",
     "provider": "FriendsOfBotble\\Bux\\Providers\\BuxServiceProvider",
